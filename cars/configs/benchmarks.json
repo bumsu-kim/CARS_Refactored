@@ -1,0 +1,32 @@
+{
+    "Common":{
+        "description": "common config for all optimizers",
+        "budget": 100000,
+        "budget_dim_ratio": 0,
+        "f_module": "cars.code.problems.simple_funcs",
+        "f_name": "convex_quartic",
+        "record_x_history": true,
+        "f_target": 1e-8,
+        "verbose": 2
+    },
+    "CARS_simple":{
+        "Otype": "CARS",
+        "description": "config for CARS optimizer",
+        "randgen": "uniform_sphere",
+        "h": 0.1,
+        "Lhat": 1.5
+    },
+    "CARS_CR":{
+        "Otype": "CARS-CR",
+        "description": "config for CARS-CR optimizer",
+        "randgen": "uniform_sphere",
+        "h": 0.1,
+        "M": 1
+    },
+    "Nesterov-Spokoiny":{
+        "Otype": "Nesterov",
+        "description": "config for Nesterov-Spokoiny optimizer",
+        "randgen": "gaussian",
+        "h": 0.1
+    }
+}

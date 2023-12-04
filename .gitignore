@@ -1,0 +1,5 @@
+.vscode
+.venv
+cars/tests/
+cars.egg-info/
+cars/figures/

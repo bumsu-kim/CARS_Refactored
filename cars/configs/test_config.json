@@ -1,0 +1,36 @@
+{
+    "TestConfig": {
+        "Otype": "Base",
+        "description": "Test for config, with base opt",
+        "budget": 1000,
+        "f_module": "cars.code.problems.simple_funcs",
+        "f_name": "quadratic",
+        "record_x_history": true,
+        "f_target": 0.01,
+        "verbose": 2
+    },
+    "TestConfig2": {
+        "Otype": "LineSearch",
+        "description": "2nd Test for config, with base opt",
+        "budget": 100,
+        "f_module": "cars.code.problems.simple_funcs",
+        "f_name": "quadratic",
+        "record_x_history": true,
+        "f_target": 0.1,
+        "randgen": "uniform_sphere",
+        "verbose": 1
+    },
+    "TestConfig_CARS": {
+        "Otype": "CARS",
+        "description": "test config for CARS optimizer",
+        "budget": 10000,
+        "f_module": "cars.code.problems.simple_funcs",
+        "f_name": "quadratic",
+        "record_x_history": true,
+        "f_target": 0.01,
+        "randgen": "gaussian",
+        "h": 0.1,
+        "Lhat": 1.5,
+        "verbose": 0
+    }
+}
