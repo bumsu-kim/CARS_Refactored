@@ -66,9 +66,6 @@ class BaseOptimizer:
         self.fname_long = config["f_module"] + "." + config["f_name"]
 
         self.eval_cnt = 0
-        self.f_target = config.get("f_target", -np.inf)
-        self.verbose = config.get("verbose", 1)
-
         self.f_history = np.zeros(self.budget)
         self.f_history[0] = self.f(self.sol)
         self.fsol = self.f_history[0]  # current f value
@@ -77,8 +74,21 @@ class BaseOptimizer:
         self.f_best = self.f_history[0]
         self.x_best = x0
 
+        if (
+            config.get("target_accuracy", 0) > 0
+        ):  # if "target_accuracy" exists and positive
+            self.f_target = (
+                config.get("f_target", 0)
+                + (self.f_history[0] - config.get("f_target", 0))
+                * config["target_accuracy"]
+            )
+        else:
+            self.f_target = config.get("f_target", -np.inf)
+
+        self.verbose = config.get("verbose", 1)
+
         self.status = Status()
-        self.call_back = call_back if call_back is not None else lambda: None
+        self.call_back = call_back if call_back is not None else lambda x: None
         if self.verbose > 0:
             print("Initialization done.")
             if self.verbose > 1:
@@ -165,15 +175,13 @@ class BaseOptimizer:
         if self.verbose > 2:
             print(f"\tsol = {self.sol}")
 
-    
 
-
-class LineSearchOptimizer(BaseOptimizer):
+class StochasticOptimizer(BaseOptimizer):
     """Line search optimizer
     BaseOptim: Base class for other optimizer classes
     """
 
-    OType = "LineSearch"
+    OType = "Stochastic"
 
     def __init__(
         self,
@@ -182,8 +190,8 @@ class LineSearchOptimizer(BaseOptimizer):
         f: callable = None,
         call_back: callable = None,
     ):
-        """Generates a LineSearchOpt object
-        OType: "LineSearch"
+        """Generates a StochasticOptimizer object
+        OType: "Stochastic"
         Args:
             x0 (np.ndarray): initial x
             f (callable): function to optimize (if not given, read from config)

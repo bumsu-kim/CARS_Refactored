@@ -13,22 +13,23 @@ def callback(optimizer):
         optimizer.gu_history = []
     optimizer.gu_history.append(optimizer.gu)
 
+
 def main():
     configs = read_configs_from_json("cars/configs/benchmarks.json")
     opts = {}
     dim = 30
-    x0 = np.random.randn(dim) + 1.0
+    x0 = 3 * np.random.randn(dim) + 1.0
     for config_name, config in configs.items():
         print(f"Testing {config_name}")
-        opts[config_name] = setup_optimizer(config, x0 = x0, call_back = callback)
+        opts[config_name] = setup_optimizer(config, x0=x0, call_back=callback)
         opts[config_name].optimize()
         print(opts[config_name].CARS_counter)
-    
+
     # plot f_history
     plt.figure()
     for config_name in configs:
         # plot opts[config_name].f_history with yscale = log (hold on)
-        plt.plot(opts[config_name].f_history, label = config_name)
+        plt.plot(opts[config_name].f_history, label=config_name)
         # set y logscale
         plt.yscale("log")
         plt.legend()
@@ -39,7 +40,7 @@ def main():
     for config_name in configs:
         # plot opts[config_name].f_history with yscale = log (hold on)
         if hasattr(opts[config_name], "hu_history"):
-            plt.plot(opts[config_name].hu_history, label = config_name, alpha = 0.2)
+            plt.plot(opts[config_name].hu_history, label=config_name, alpha=0.2)
         # set y logscale
         plt.yscale("log")
         plt.legend()
@@ -49,7 +50,7 @@ def main():
     plt.figure()
     for config_name in configs:
         # plot opts[config_name].f_history with yscale = log (hold on)
-        plt.plot(opts[config_name].gu_history, label = config_name, alpha = 0.2)
+        plt.plot(opts[config_name].gu_history, label=config_name, alpha=0.2)
         # set y logscale
         plt.yscale("log")
         plt.legend()

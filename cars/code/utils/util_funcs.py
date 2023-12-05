@@ -39,8 +39,9 @@ def read_configs_from_json(json_file: str) -> dict[str, dict[str, float] | float
     return configs
 
 
-
-def setup_logger(logger_name: str, log_file: str, level: int = logging.INFO) -> logging.Logger:
+def setup_logger(
+    logger_name: str, log_file: str, level: int = logging.INFO
+) -> logging.Logger:
     """Setup a logger
 
     Args:
@@ -64,7 +65,8 @@ def setup_logger(logger_name: str, log_file: str, level: int = logging.INFO) -> 
 
     return logger
 
-## Helper functions for Computing Finite Difference
+
+## Helper functions for Computing derivative-related quantites
 def central_difference(fp: float, fm: float, h: float) -> float:
     """Compute the central difference
 
@@ -109,6 +111,42 @@ def central_difference_both(
     """
     return (fp - fm) / 2.0 / h, (fp - 2.0 * f0 + fm) / h**2
 
+def numerical_quadrature(fs: np.ndarray, h: float, GH_pts: int = 5) -> tuple[float, float, float, float]:
+    """Compute the first, second, third, and fourth order numerical quadrature
+
+    Args:
+        fs (np.ndarray): function values
+        h (float): finite difference step size
+        GH_pts (int, optional): number of Gauss-Hermite points. Defaults to 5.
+
+    Returns:
+        tuple[float, float, float, float]: first, second, third, and fourth order numerical quadrature
+    """
+    gh = roots_hermite(GH_pts)
+    gh_value = np.expand_dims(gh[0], axis=1)
+    if GH_pts % 2 == 0:
+        xs = np.matlib.repmat(x, GH_pts, 1) + h * np.sqrt(2.0) * gh_value * u
+        fs = oracles(f, xs)
+    else:  # can reuse fval = f(x)
+        xs = np.matlib.repmat(x, GH_pts, 1) + h * np.sqrt(2.0) * gh_value * u
+        xm = xs[: (GH_pts - 1) // 2, :]
+        xp = xs[-(GH_pts - 1) // 2 :, :]
+        fs = np.empty(GH_pts)
+        fs[: (GH_pts - 1) // 2] = oracles(f, xm)
+        fs[(GH_pts - 1) // 2] = fval
+        fs[-(GH_pts - 1) // 2 :] = oracles(f, xp)
+    gh_weight = gh[1]
+    fsgh = fs * gh_weight
+    gh_value = np.transpose(gh_value)
+    grad_u = 1.0 / np.sqrt(np.pi) / h * np.sum(fsgh * (np.sqrt(2.0) * gh_value))
+    hess_u = 1.0 / np.sqrt(np.pi) / h**2 * np.sum(fsgh * (2 * gh_value**2 - 1))
+    D3f_u = (
+        1.0
+        / np.sqrt(np.pi)
+        / h**3
+        * np.sum(
+            fsgh * (np.sqrt(8.0) * gh_value**3 - 3.0 * np.sqrt(2.0) * gh_value)
+        )
 
 ## Helper functions for random sampling
 def normalize_matrix(mat: np.ndarray) -> np.ndarray:
