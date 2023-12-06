@@ -31,8 +31,11 @@ def read_configs_from_json(json_file: str) -> dict[str, dict[str, float] | float
     """
     with open(json_file, "r") as f:
         configs = json.load(f)
-    common_config = configs.get("Common", {})
-    configs.pop("Common")
+    if "Common" in configs:
+        common_config = configs["Common"]
+        configs.pop("Common")
+    else:
+        common_config = {}
     for config in configs.values():
         for key in common_config:
             if key not in config:

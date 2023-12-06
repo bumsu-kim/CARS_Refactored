@@ -1,5 +1,3 @@
-from cars.code import optimizers
-from cars.code.optimizers.optimizers import CARS, CARSNQ, CARSCR, Nesterov
 from cars.code.utils.util_funcs import read_configs_from_json
 
 import importlib

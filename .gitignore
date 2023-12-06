@@ -4,3 +4,4 @@ cars/tests/*
 cars.egg-info/
 cars/figures/*
 *.py[cod]
+__pycache__/
