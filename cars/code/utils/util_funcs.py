@@ -1,7 +1,9 @@
 import numpy as np
+import numpy.matlib
 import importlib
 import json
 import logging
+from scipy.special import roots_hermite
 
 
 def load_function(module_name: str, function_name: str) -> callable:
@@ -37,33 +39,6 @@ def read_configs_from_json(json_file: str) -> dict[str, dict[str, float] | float
                 config[key] = common_config[key]
 
     return configs
-
-
-def setup_logger(
-    logger_name: str, log_file: str, level: int = logging.INFO
-) -> logging.Logger:
-    """Setup a logger
-
-    Args:
-        logger_name (str): name of the logger
-        log_file (str): path to the log file
-        level (int, optional): logging level. Defaults to logging.INFO.
-
-    Returns:
-        logging.Logger: logger
-    """
-    logger = logging.getLogger(logger_name)
-    formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-    fileHandler = logging.FileHandler(log_file, mode="w")
-    fileHandler.setFormatter(formatter)
-    streamHandler = logging.StreamHandler()
-    streamHandler.setFormatter(formatter)
-
-    logger.setLevel(level)
-    logger.addHandler(fileHandler)
-    logger.addHandler(streamHandler)
-
-    return logger
 
 
 ## Helper functions for Computing derivative-related quantites
@@ -111,31 +86,21 @@ def central_difference_both(
     """
     return (fp - fm) / 2.0 / h, (fp - 2.0 * f0 + fm) / h**2
 
-def numerical_quadrature(fs: np.ndarray, h: float, GH_pts: int = 5) -> tuple[float, float, float, float]:
-    """Compute the first, second, third, and fourth order numerical quadrature
+
+def get_directional_derivs_nq(
+    fs: np.ndarray, h: float, gh_weight: np.ndarray, gh_value: np.ndarray
+) -> tuple[float, float, float, float]:
+    """Approximate the first, second, third, and fourth order directional derivative using numerical quadrature
 
     Args:
         fs (np.ndarray): function values
         h (float): finite difference step size
-        GH_pts (int, optional): number of Gauss-Hermite points. Defaults to 5.
+        gh_weight (np.ndarray): Gauss-Hermite weights
+        gh_value (np.ndarray): Gauss-Hermite quadratures
 
     Returns:
         tuple[float, float, float, float]: first, second, third, and fourth order numerical quadrature
     """
-    gh = roots_hermite(GH_pts)
-    gh_value = np.expand_dims(gh[0], axis=1)
-    if GH_pts % 2 == 0:
-        xs = np.matlib.repmat(x, GH_pts, 1) + h * np.sqrt(2.0) * gh_value * u
-        fs = oracles(f, xs)
-    else:  # can reuse fval = f(x)
-        xs = np.matlib.repmat(x, GH_pts, 1) + h * np.sqrt(2.0) * gh_value * u
-        xm = xs[: (GH_pts - 1) // 2, :]
-        xp = xs[-(GH_pts - 1) // 2 :, :]
-        fs = np.empty(GH_pts)
-        fs[: (GH_pts - 1) // 2] = oracles(f, xm)
-        fs[(GH_pts - 1) // 2] = fval
-        fs[-(GH_pts - 1) // 2 :] = oracles(f, xp)
-    gh_weight = gh[1]
     fsgh = fs * gh_weight
     gh_value = np.transpose(gh_value)
     grad_u = 1.0 / np.sqrt(np.pi) / h * np.sum(fsgh * (np.sqrt(2.0) * gh_value))
@@ -144,9 +109,16 @@ def numerical_quadrature(fs: np.ndarray, h: float, GH_pts: int = 5) -> tuple[flo
         1.0
         / np.sqrt(np.pi)
         / h**3
-        * np.sum(
-            fsgh * (np.sqrt(8.0) * gh_value**3 - 3.0 * np.sqrt(2.0) * gh_value)
-        )
+        * np.sum(fsgh * (np.sqrt(8.0) * gh_value**3 - 3.0 * np.sqrt(2.0) * gh_value))
+    )
+    D4f_u = (
+        1.0
+        / np.sqrt(np.pi)
+        / h**4
+        * np.sum(fsgh * (4 * gh_value**4 - 6 * 2 * gh_value**2 + 3))
+    )
+    return grad_u, hess_u, D3f_u, D4f_u
+
 
 ## Helper functions for random sampling
 def normalize_matrix(mat: np.ndarray) -> np.ndarray:
@@ -198,80 +170,3 @@ def dim2coord(dim: int, shape: tuple[int]) -> tuple[int]:
         coord.append(dim % shape[i])
         dim = dim // shape[i]
     return tuple(coord)
-
-
-# class Xinfo:
-#     """Class to store the status of the optimizer"""
-
-#     def __init__(self, x0: np.ndarray, budget: int, dim: int = None):
-#         self.x0 = x0
-#         self.dim = len(x0) if dim is None else dim  # use numpy method instead?
-#         init_sz = budget  # if maxEval <= dim*1000 else dim*1000
-#         self.x = np.zeros((init_sz, self.dim))
-#         self.i = 0  # current pointer loc
-#         self.exceed_max_evals = False
-#         self.max_i = budget
-#         self.shape = self.x0.shape
-#         self.put_x(x0)
-
-#     # subscript operator
-#     def __getitem__(self, j: int) -> np.ndarray:
-#         """Returns the j-th x
-
-#         Args:
-#             j (int): index of x
-
-#         Raises:
-#             ValueError: if j exceeds the max number of evaluations
-
-#         Returns:
-#             np.ndarray: x
-#         """
-#         if j < self.max_i:
-#             return self.x[j, :]
-#         else:
-#             raise ValueError(f"{j} exceeds the max num evals {self.max_i}")
-
-#     def put_x(self, x: np.ndarray):
-#         if not self.exceed_max_evals:
-#             self.x[self.i, :] = x
-#             self.i += 1
-#         if self.i >= self.max_i:
-#             self.exceed_max_evals = True
-
-#     def newest(self):
-#         return self.bracket(self.i - 1)
-
-
-# class fVals:
-#     """Class to store the status of the optimizer"""
-
-#     def __init__(self, f0: float, maxEval: int = 1000):
-#         self.rec = True
-#         self.vals = np.zeros(maxEval)
-#         self.i = 0  # current pointer loc
-#         self.best_val: float = np.inf
-#         self.best_i = self.i
-#         self.max_i = maxEval
-#         self.exceed_max_evals = False
-#         self.put_val(f0)
-
-#     def put_val(self, fx: float, threshold=0.0):
-#         if not self.exceed_max_evals:
-#             self.vals[self.i] = fx
-#             if fx < self.best_val - threshold:  # better by this amount
-#                 self.best_val = fx
-#                 self.best_i = self.i
-#             self.i += 1
-
-#         if self.i >= self.max_i:
-#             self.exceed_max_evals = True
-
-#     def __getitem__(self, j: int):  # later change the name
-#         if j < self.max_i:
-#             return self.vals[j]
-#         else:
-#             raise ValueError(f"{j} exceeds the max num evals {self.max_i}")
-
-#     def newest(self):
-#         return self.vals[self.i - 1]

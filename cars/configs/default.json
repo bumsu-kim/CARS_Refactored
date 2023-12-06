@@ -24,6 +24,13 @@
         "h": 0.1,
         "M": 1
     },
+    "CARS-NQ":{
+        "Otype": "CARS-NQ",
+        "description": "Default config for CARS-NQ optimizer",
+        "randgen": "uniform_sphere",
+        "h": 0.2,
+        "nq": 5
+    },
     "Nesterov":{
         "Otype": "Nesterov",
         "description": "Default config for Nesterov-Spokoiny optimizer",

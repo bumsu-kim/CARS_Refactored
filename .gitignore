@@ -1,5 +1,6 @@
 .vscode
 .venv
-cars/tests/
+cars/tests/*
 cars.egg-info/
-cars/figures/
+cars/figures/*
+*.py[cod]

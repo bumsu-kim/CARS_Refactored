@@ -174,6 +174,7 @@ class BaseOptimizer:
         print(f"\tfsol = {self.fsol:.6e}")
         if self.verbose > 2:
             print(f"\tsol = {self.sol}")
+        print("\n")
 
 
 class StochasticOptimizer(BaseOptimizer):

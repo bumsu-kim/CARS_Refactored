@@ -41,4 +41,80 @@ Here is a quick guide:
     opt.optimize()
     ```
 
-Then you're all set!
+## benchmark.py
+Sample run:
+```bash
+~/CARS_Refactored$ python cars/executables/benchmark.py 
+```
+Sample result:
+```
+------------
+Testing CARS_simple
+Initialization done.
+        Config: config for CARS optimizer
+        func name: rosenbrock   max evaluation = 50000
+        f(x_0) = 225553.67240992823
+        budget = 50000
+        f_target = 1e-08
+
+Finished: Reached the max number of evaluations
+Current status = Reached the max number of evaluations
+        eval_cnt = 50000
+        fsol = 8.569526e+01
+
+
+[    0.   240.   258. 16168.]
+
+------------
+Testing CARS_CR
+Initialization done.
+        Config: config for CARS-CR optimizer
+        func name: rosenbrock   max evaluation = 50000
+        f(x_0) = 225553.67240992823
+        budget = 50000
+        f_target = 1e-08
+
+Finished: Reached the max number of evaluations
+Current status = Reached the max number of evaluations
+        eval_cnt = 50000
+        fsol = 7.205167e+01
+
+
+[    0.     0.     0. 12499.     0.]
+
+------------
+Testing CARS_NQ
+Initialization done.
+        Config: config for CARS-NQ optimizer
+        func name: rosenbrock   max evaluation = 50000
+        f(x_0) = 225553.67240992823
+        budget = 50000
+        f_target = 1e-08
+
+Finished: Reached the max number of evaluations
+Current status = Reached the max number of evaluations
+        eval_cnt = 50000
+        fsol = 7.925918e+01
+
+
+[8333.    0.    0.    0.    0.    0.    0.]
+
+------------
+Testing Nesterov-Spokoiny
+Initialization done.
+        Config: config for Nesterov-Spokoiny optimizer. Rosenbrock function requires large L
+        func name: rosenbrock   max evaluation = 50000
+        f(x_0) = 225553.67240992823
+        budget = 50000
+        f_target = 1e-08
+
+Finished: Reached the max number of evaluations
+Current status = Reached the max number of evaluations
+        eval_cnt = 50000
+        fsol = 1.301358e+02
+
+
+[   0. 3831. 3920. 8915.]
+
+------------
+```
