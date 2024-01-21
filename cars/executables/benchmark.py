@@ -53,22 +53,22 @@ def main():
     # plot f_history
     plot_res(
         opts,
-        os.path.join(save_dir, "benchmark_f.png"),
         "f_history",
+        os.path.join(save_dir, "benchmark_f.png"),
     )
     # plot gu_history
     plot_res(
         opts,
-        os.path.join(save_dir, "benchmark_gu.png"),
         "gu_history",
+        os.path.join(save_dir, "benchmark_gu.png"),
         alpha=0.2,
         grid=None,
     )
     # plot hu_history
     plot_res(
         opts,
-        os.path.join(save_dir, "benchmark_hu.png"),
         "hu_history",
+        os.path.join(save_dir, "benchmark_hu.png"),
         alpha=0.2,
     )
 
