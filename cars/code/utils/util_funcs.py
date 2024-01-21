@@ -3,6 +3,7 @@ import numpy.matlib
 import importlib
 import json
 import logging
+import matplotlib.pyplot as plt
 from scipy.special import roots_hermite
 
 
@@ -42,6 +43,59 @@ def read_configs_from_json(json_file: str) -> dict[str, dict[str, float] | float
                 config[key] = common_config[key]
 
     return configs
+
+
+## Helper functions for post-processing
+def plot_res(
+    opts: dict,
+    save_file_name: str,
+    field_name: str,
+    **kwargs,
+):
+    """Plot the results and save it in a file.
+
+    Args:
+        opts (BaseOptimizer|dict[BaseOptimizer]): A single optimizer, or a dictionary of optimizers
+        save_file_name (str): file name to store the result
+        field_name (str): fields to plot. For instance, f_history, hu_history or gu_history.
+
+    Keyword Args:
+        Arguments for figure control or plt.plot(). For example:
+
+        [Figure Control]
+        - figsize (tuple(int,int)): figure size
+        - yscale (str): y-scale of the plot, "log" is default. Use "linear" for linear plots.
+        - legend: Specify to "None" to suppress showing. Default is to show legend
+        - grid: Specify to "None" to suppress showing. Default is to show both
+
+        [Plot Attributes] (anything not in [Figure Control])
+        - alpha, linestyle, etc.
+    """
+    if not isinstance(opts, dict):  # if single object
+        opts = {opts.get("OType", "Default_Label"): opts}
+
+    # First check if the field_name is valid
+    isValid = any(
+        hasattr(opt, field_name) for opt in opts.values()
+    )  # valid if any of them has it
+    if not isValid:
+        raise ValueError(f'None of the optimizers have the attribute "{field_name}".')
+    plt.figure(figsize=kwargs.get("figsize", (12, 9)))
+    figure_attributes = ["figsize", "yscale", "legend", "grid"]
+    kwargs_plt = {k: v for k, v in kwargs.items() if k not in figure_attributes}
+    for label, opt in opts.items():
+        if hasattr(opt, field_name):
+            plt.plot(getattr(opt, field_name), label=label, **kwargs_plt)
+    if "yscale" in kwargs:
+        plt.yscale(kwargs.get("yscale", "log"))
+    else:
+        plt.yscale("log")
+    if kwargs.get("legend", "default_is_not_None") is not None:
+        plt.legend()
+    if kwargs.get("grid", "default_is_not_None") is not None:
+        plt.grid(which=kwargs.get("grid", "both"))
+    # Save to figure
+    plt.savefig(save_file_name)
 
 
 ## Helper functions for Computing derivative-related quantites

@@ -1,7 +1,4 @@
-from gettext import install
 from setuptools import setup, find_packages
-from sympy import python
-from torch import long
 
 setup(
     name="cars",
@@ -12,7 +9,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Bumsu Kim, Daniel McKenzie, HanQin Cai, and Wotao Yin",
     author_email="bumsu@ucla.edu",
-    url="https://github.com/bumsu/CARS",
+    url="https://github.com/bumsu/CARS_Refactored",
     install_requires=[
         "numpy",
         # etc.

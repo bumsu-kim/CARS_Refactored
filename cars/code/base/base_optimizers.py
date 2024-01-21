@@ -29,9 +29,13 @@ class BaseOptimizer:
                 record_x_history (bool): whether to record x history (default: True)
                 budget (int): max number of function evaluations
                 f_target (float): target f value
-                verbose (int): verbosity level
+                verbose (int): verbosity level.
+                    * 0: print nothing
+                    * 1: Alert only when initialized or finished
+                    * 2: Also print the specific status at (1)
+                    * 3: In addition, print the solution vectors (x) in status.
         """
-        self.description = config.get("description", "Default BaseOptim")
+        self.description = config.get("description", "Default BaseOptimizer")
 
         if x0 is None:
             self.x0 = config.get("x0", np.zeros(1))
@@ -93,7 +97,7 @@ class BaseOptimizer:
             print("Initialization done.")
             if self.verbose > 1:
                 print(
-                    f"\tConfig: {self.description}"
+                    f"\tDescription: {self.description}"
                     + f"\n\tfunc name: {self.fname}"
                     + f"\tmax evaluation = {self.budget}\n"
                     + f"\tf(x_0) = {self.f(self.sol)}\n"
@@ -174,7 +178,7 @@ class BaseOptimizer:
         print(f"\tfsol = {self.fsol:.6e}")
         if self.verbose > 2:
             print(f"\tsol = {self.sol}")
-        print("\n")
+        print()
 
 
 class StochasticOptimizer(BaseOptimizer):
