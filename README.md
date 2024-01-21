@@ -44,8 +44,10 @@ Current status = Reached the function target
         eval_cnt = 805
         fsol = 1.906433e-01
 ```
+When setting up your optimizer with `setup_default_optimizer`, the [default configuration](cars/configs/default.json) is used.  
+If a finer tuning of your optimizer is required (e.g., sampling radius, (relative) smoothness parameter, etc.), see the next section.
 
-## Usage
+## Fine-tuing Optimizers using `config.json`
 1. Define the problem to solve (_i.e._ your function to minimize) in `cars/code/problems/`.  
    _e.g._ in `cars/code/problems/my_functions.py`,
    ```python
@@ -89,12 +91,12 @@ Current status = Reached the function target
 There is a sample script `benchmark.py` for comparing various algorithms implemented in this project.
 You can find more usage there (_e.g._ using custom `call_back` functions)
 
-## Sample run: `benchmark.py`
+## `benchmark.py`: An Example for Comparing Multiple Optimizers
 Run [`benchmark.py`](cars/executables/benchmark.py) to compare the `CARS`, `CARS-CR`, `CARS-NQ`, and `Nesterov-Spokoiny` optimizers for the 30-dimensional Rosenbrock function:
 ```bash
 > ~/CARS_Refactored$ python cars/executables/benchmark.py 
 ```
-The configuration used for this benchmark is [benchmark_rosenbrock.json](cars/configs/benchmark_rosenbrock.json).  
+The configuration file used for this test is [benchmark_rosenbrock.json](cars/configs/benchmark_rosenbrock.json).  
 
 ### Sample result:
 ```
@@ -130,21 +132,9 @@ Current status = Reached the max number of evaluations
 
 Safeguard counter: [    0.     0.     0. 12499.     0.]
 
-------------
-Testing CARS_NQ
-Initialization done.
-        Description: config for CARS-NQ optimizer
-        func name: rosenbrock   budget = 50000
-        f(x_0) = 860240.2425351156
-        budget = 50000
-        f_target = 1e-08
 
-Finished: Reached the max number of evaluations
-Current status = Reached the max number of evaluations
-        eval_cnt = 50000
-        fsol = 2.002609e+01
+... (omitted) ...
 
-Safeguard counter: [8333.    0.    0.    0.    0.    0.    0.]
 
 ------------
 Testing Nesterov-Spokoiny
@@ -161,10 +151,6 @@ Current status = Reached the max number of evaluations
         fsol = 8.017286e+01
 
 Safeguard counter: [    0.  2768.  2798. 11100.]
-
-
- ... and many others ...
-
 ```
 The lists of integers at the ends are the `safeguard_counter`, which counts how often each candidate is chosen at the safeguard step (see, _e.g._, Line 9 of Algorithm 1.)
 
