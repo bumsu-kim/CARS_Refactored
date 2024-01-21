@@ -28,7 +28,10 @@ class BaseOptimizer:
                 f_name (str): function name of the function to optimize
                 record_x_history (bool): whether to record x history (default: True)
                 budget (int): max number of function evaluations
-                f_target (float): target f value
+                f_target (float): target f value.
+                target_accuracy (float): Relative target accuracy. If set positive,
+                    f_target is considered `f_min` (0 if not set) and the new target value is
+                    f_min + [target_accuracy] * (f(x0) - f_min)
                 verbose (int): verbosity level.
                     * 0: print nothing
                     * 1: Alert only when initialized or finished
@@ -80,7 +83,7 @@ class BaseOptimizer:
 
         if (
             config.get("target_accuracy", 0) > 0
-        ):  # if "target_accuracy" exists and positive
+        ):  # if "target_accuracy" exists and positive, the original "f_target" is considered "f_min"
             self.f_target = (
                 config.get("f_target", 0)
                 + (self.f_history[0] - config.get("f_target", 0))

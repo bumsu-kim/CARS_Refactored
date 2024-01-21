@@ -5,7 +5,7 @@ import inspect
 
 
 def load_optimizers():
-    """Load optimizers defined in cars/code/optimizers/optimizers.py"""
+    """Load optimizers defined in `cars/code/optimizers/optimizers.py`"""
     optimizers_module = importlib.import_module("cars.code.optimizers.optimizers")
     optimizers_dict = {}
     for name, obj in inspect.getmembers(optimizers_module, inspect.isclass):
@@ -34,10 +34,10 @@ def setup_optimizer(
 
 
 def setup_default_optimizer(config_name: str, **kwargs) -> callable:
-    """Setup a default optimizer (read from cars/configs/default.json)
+    """Setup a default optimizer (read from `cars/configs/default.json`)
 
     Args:
-        config_name (str): name of the configuration in default.json
+        config_name (str): name of the configuration in `default.json`
 
     Returns:
         callable: optimizer
