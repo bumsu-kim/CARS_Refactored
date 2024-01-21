@@ -1,7 +1,7 @@
 {
     "Common":{
         "description": "common config for all optimizers in this configuration",
-        "budget": 5000,
+        "budget": 50000,
         "budget_dim_ratio": 0,
         "f_module": "cars.code.problems.simple_funcs",
         "f_name": "rosenbrock",

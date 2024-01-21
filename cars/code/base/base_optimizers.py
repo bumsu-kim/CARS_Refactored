@@ -99,7 +99,7 @@ class BaseOptimizer:
                 print(
                     f"\tDescription: {self.description}"
                     + f"\n\tfunc name: {self.fname}"
-                    + f"\tmax evaluation = {self.budget}\n"
+                    + f"\tbudget = {self.budget}\n"
                     + f"\tf(x_0) = {self.f(self.sol)}\n"
                     + f"\tbudget = {self.budget}\n"
                     + f"\tf_target = {self.f_target}\n"

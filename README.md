@@ -33,16 +33,16 @@ if __name__ == "__main__":
 and a sample result:
 ```
 Initialization done.
-        Config: Default config for CARS-CR optimizer
-        func name: convex_quartic       max evaluation = 3000
-        f(x_0) = 272.4834569252656
+        Description: Default config for CARS-CR optimizer
+        func name: convex_quartic       budget = 3000
+        f(x_0) = 204.0644816576005
         budget = 3000
-        f_target = 0.2724834569252656
+        f_target = 0.20406448165760052
 
 Finished: Reached the function target
 Current status = Reached the function target
-        eval_cnt = 889
-        fsol = 2.650881e-01
+        eval_cnt = 805
+        fsol = 1.906433e-01
 ```
 
 ## Usage
@@ -68,9 +68,11 @@ Current status = Reached the function target
         "Lhat": 1.5
     }
     }
-    ```
-3. Read the configuration and set your optimizer with this
-   and your starting point `x0`.  
+    ```  
+    When benchmarking many algorithms with common settings, _e.g._, same function, same budget, etc., use `"Common"` object in the json. See [benchmark_rosenbrock.json](cars/configs/benchmark_rosenbrock.json) for an illustration.  
+
+3. Read the configuration file and set your optimizer with it.
+   Also set your starting point `x0`.  
    Call `optimize()` to start optimization.  
 
    _e.g._ in `cars/executables/my_test.py`,  
@@ -88,80 +90,82 @@ There is a sample script `benchmark.py` for comparing various algorithms impleme
 You can find more usage there (_e.g._ using custom `call_back` functions)
 
 ## Sample run: `benchmark.py`
-Run `benchmark.py` to compare the `CARS`, `CARS-CR`, `CARS-NQ`, and `Nesterov-Spokoiny` optimizers for the 30-dimensional Rosenbrock function:
+Run [`benchmark.py`](cars/executables/benchmark.py) to compare the `CARS`, `CARS-CR`, `CARS-NQ`, and `Nesterov-Spokoiny` optimizers for the 30-dimensional Rosenbrock function:
 ```bash
-~/CARS_Refactored$ python cars/executables/benchmark.py 
+> ~/CARS_Refactored$ python cars/executables/benchmark.py 
 ```
-Sample result:
+The configuration used for this benchmark is [benchmark_rosenbrock.json](cars/configs/benchmark_rosenbrock.json).  
+
+### Sample result:
 ```
 ------------
 Testing CARS_simple
 Initialization done.
-        Config: config for CARS optimizer
-        func name: rosenbrock   max evaluation = 50000
-        f(x_0) = 225553.67240992823
+        Description: config for CARS optimizer
+        func name: rosenbrock   budget = 50000
+        f(x_0) = 860240.2425351156
         budget = 50000
         f_target = 1e-08
 
 Finished: Reached the max number of evaluations
 Current status = Reached the max number of evaluations
         eval_cnt = 50000
-        fsol = 8.569526e+01
+        fsol = 1.205601e+01
 
-
-[    0.   240.   258. 16168.]
+Safeguard counter: [    0.   312.   277. 16077.]
 
 ------------
 Testing CARS_CR
 Initialization done.
-        Config: config for CARS-CR optimizer
-        func name: rosenbrock   max evaluation = 50000
-        f(x_0) = 225553.67240992823
+        Description: config for CARS-CR optimizer
+        func name: rosenbrock   budget = 50000
+        f(x_0) = 860240.2425351156
         budget = 50000
         f_target = 1e-08
 
 Finished: Reached the max number of evaluations
 Current status = Reached the max number of evaluations
         eval_cnt = 50000
-        fsol = 7.205167e+01
+        fsol = 1.978933e+01
 
-
-[    0.     0.     0. 12499.     0.]
+Safeguard counter: [    0.     0.     0. 12499.     0.]
 
 ------------
 Testing CARS_NQ
 Initialization done.
-        Config: config for CARS-NQ optimizer
-        func name: rosenbrock   max evaluation = 50000
-        f(x_0) = 225553.67240992823
+        Description: config for CARS-NQ optimizer
+        func name: rosenbrock   budget = 50000
+        f(x_0) = 860240.2425351156
         budget = 50000
         f_target = 1e-08
 
 Finished: Reached the max number of evaluations
 Current status = Reached the max number of evaluations
         eval_cnt = 50000
-        fsol = 7.925918e+01
+        fsol = 2.002609e+01
 
-
-[8333.    0.    0.    0.    0.    0.    0.]
+Safeguard counter: [8333.    0.    0.    0.    0.    0.    0.]
 
 ------------
 Testing Nesterov-Spokoiny
 Initialization done.
-        Config: config for Nesterov-Spokoiny optimizer. Rosenbrock function requires large L
-        func name: rosenbrock   max evaluation = 50000
-        f(x_0) = 225553.67240992823
+        Description: config for Nesterov-Spokoiny optimizer. Rosenbrock function requires large L
+        func name: rosenbrock   budget = 50000
+        f(x_0) = 860240.2425351156
         budget = 50000
         f_target = 1e-08
 
 Finished: Reached the max number of evaluations
 Current status = Reached the max number of evaluations
         eval_cnt = 50000
-        fsol = 1.301358e+02
+        fsol = 8.017286e+01
+
+Safeguard counter: [    0.  2768.  2798. 11100.]
 
 
-[   0. 3831. 3920. 8915.]
+ ... and many others ...
 
-------------
 ```
 The lists of integers at the ends are the `safeguard_counter`, which counts how often each candidate is chosen at the safeguard step (see, _e.g._, Line 9 of Algorithm 1.)
+
+`benchmark.py` also plots and saves the results into files in `cars/figures/` directory.
