@@ -47,6 +47,8 @@ Current status = Reached the function target
 When setting up your optimizer with `setup_default_optimizer`, the [default configuration](cars/configs/default.json) is used.  
 If a finer tuning of your optimizer is required (e.g., sampling radius, (relative) smoothness parameter, etc.), see the next section.
 
+Another minimal example can be found in this [notebook](cars/executables/minimal_ex2.ipynb) as well.
+
 ## Fine-tuing Optimizers using `config.json`
 1. Define the problem to solve (_i.e._ your function to minimize) in `cars/code/problems/`.  
    _e.g._ in `cars/code/problems/my_functions.py`,
