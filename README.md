@@ -8,7 +8,7 @@ pip install -e .
 from the root directory of the repo to install `CARS` with editable mode.
 
 ## Minimal Example
-Here is a minimal working example for a quick preview:
+Here is a [minimal working example](cars/executables/minimal_ex.py) for a quick preview:
 ```python
 import numpy as np
 from cars.code.utils.setup_utils import setup_default_optimizer
