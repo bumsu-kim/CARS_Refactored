@@ -64,6 +64,7 @@ def main():
         os.path.join(save_dir, "benchmark_gu.png"),
         alpha=0.3,
         grid=None,
+        xlabel="Iterations",
     )
     # plot hu_history
     plot_res(
@@ -71,6 +72,7 @@ def main():
         "hu_history",
         os.path.join(save_dir, "benchmark_hu.png"),
         alpha=0.3,
+        xlabel="Iterations",
     )
 
 
