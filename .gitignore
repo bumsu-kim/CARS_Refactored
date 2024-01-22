@@ -1,7 +1,17 @@
 .vscode
+
+# Environments
 .venv
-cars/tests/*
-cars.egg-info/
-cars/figures/*
-*.py[cod]
+venv/
+.env
+env/
+
+# Distribution / packaging
+*.egg-info/
+
+# # Generated figures
+# cars/figures/*
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
+*.py[cod]

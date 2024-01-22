@@ -8,10 +8,10 @@ pip install -e .
 from the root directory of the repo to install `CARS` with editable mode.
 
 ## Minimal Example
-Here is a [minimal working example](cars/executables/minimal_ex.py) for a quick preview:
+Here is a [minimal working example](executables/minimal_ex.py) for a quick preview:
 ```python
 import numpy as np
-from cars.code.utils.setup_utils import setup_default_optimizer
+from cars.utils import setup_default_optimizer
 
 
 def my_func(x: np.ndarray) -> float:
@@ -44,22 +44,22 @@ Current status = Reached the function target
         eval_cnt = 805
         fsol = 1.906433e-01
 ```
-When setting up your optimizer with `setup_default_optimizer`, the [default configuration](cars/configs/default.json) is used.  
+When setting up your optimizer with `setup_default_optimizer`, the [default configuration](configs/default.json) is used.  
 If a finer tuning of your optimizer is required (e.g., sampling radius, (relative) smoothness parameter, etc.), see the next section.
 
-Another minimal example can be found in this [notebook](cars/executables/minimal_ex2.ipynb) as well.
+Another minimal example can be found in this [notebook](executables/minimal_ex2.ipynb) as well.
 
 ## Fine-tuing Optimizers using `config.json`
-1. Define the problem to solve (_i.e._ your function to minimize) in `cars/code/problems/`.  
-   _e.g._ in `cars/code/problems/my_functions.py`,
+1. Define the problem to solve (_i.e._ your function to minimize) in `problems/`.  
+   _e.g._ in `problems/my_functions.py`,
    ```python
     def my_func(x: ndarray) -> float :
         # some computation ...
         return f_value
     ```
-2. Set your optimizer's configuration in a separate `json` file in `cars/configs/`.  
+2. Set your optimizer's configuration in a separate `json` file in `configs/`.  
    This makes it easy to record and manage the results.  
-   _e.g._ in `cars/config/my_config.json`,
+   _e.g._ in `config/my_config.json`,
    ```json
     {
     "CARS_simple":{
@@ -73,32 +73,32 @@ Another minimal example can be found in this [notebook](cars/executables/minimal
     }
     }
     ```  
-    When benchmarking many algorithms with common settings, _e.g._, same function, same budget, etc., use `"Common"` object in the json. See [benchmark_rosenbrock.json](cars/configs/benchmark_rosenbrock.json) for an illustration.  
+    When benchmarking many algorithms with common settings, _e.g._, same function, same budget, etc., use `"Common"` object in the json. See [benchmark_rosenbrock.json](configs/benchmark_rosenbrock.json) for an illustration.  
 
 3. Read the configuration file and set your optimizer with it.
    Also set your starting point `x0`.  
    Call `optimize()` to start optimization.  
 
-   _e.g._ in `cars/executables/my_test.py`,  
+   _e.g._ in `executables/my_test.py`,  
    ```python
-   from cars.code.utils.util_funcs import read_configs_from_json
-   from cars.code.utils.setup_utils import setup_optimizer
+   from cars.utils import read_configs_from_json, setup_optimizer
 
-   config = read_configs_from_json("cars/configs/my_test.json")["CARS_simple"]
+   config = read_configs_from_json("configs/my_test.json")["CARS_simple"]
    opt = setup_optimizer(config, x0=x0)
    opt.optimize()
    ```
 
 
 There is a sample script `benchmark.py` for comparing various algorithms implemented in this project.
-You can find more usage there (_e.g._ using custom `call_back` functions)
+More features are introduced in `benchmark.py` (_e.g._ using custom `call_back` functions, plotting results, etc.)  
+Read the next section for more information.
 
 ## `benchmark.py`: An Example for Comparing Multiple Optimizers
-Run [`benchmark.py`](cars/executables/benchmark.py) to compare the `CARS`, `CARS-CR`, `CARS-NQ`, and `Nesterov-Spokoiny` optimizers for the 30-dimensional Rosenbrock function:
+Run [`benchmark.py`](executables/benchmark.py) to compare the `CARS`, `CARS-CR`, `CARS-NQ`, and `Nesterov-Spokoiny` optimizers for the 30-dimensional Rosenbrock function:
 ```bash
-> ~/CARS_Refactored$ python cars/executables/benchmark.py 
+> ~/CARS_Refactored$ python executables/benchmark.py 
 ```
-The configuration file used for this test is [benchmark_rosenbrock.json](cars/configs/benchmark_rosenbrock.json).  
+The configuration file used for this test is [benchmark_rosenbrock.json](configs/benchmark_rosenbrock.json).  
 
 ### Sample result:
 ```
@@ -156,4 +156,4 @@ Safeguard counter: [    0.  2768.  2798. 11100.]
 ```
 The lists of integers at the ends are the `safeguard_counter`, which counts how often each candidate is chosen at the safeguard step (see, _e.g._, Line 9 of Algorithm 1.)
 
-`benchmark.py` also plots and saves the results into files in `cars/figures/` directory.
+`benchmark.py` also plots and saves the results into files in `figures/` directory.

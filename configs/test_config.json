@@ -1,0 +1,11 @@
+{
+"CARS_simple":{
+    "Otype": "CARS",
+    "description": "config for CARS optimizer",
+    "f_module": "problems.my_functions",
+    "f_name": "my_func",
+    "randgen": "uniform_sphere",
+    "h": 0.1,
+    "Lhat": 1.5
+}
+}
