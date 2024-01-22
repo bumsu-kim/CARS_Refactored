@@ -1,8 +1,8 @@
 {
     "Common":{
         "description": "common config for all optimizers in this configuration",
-        "budget": 5000,
-        "budget_dim_ratio": 0,
+        "budget": 50000,
+        "budget_di0m_ratio": 0,
         "f_module": "problems.simple_funcs",
         "f_name": "rosenbrock",
         "record_x_history": true,
